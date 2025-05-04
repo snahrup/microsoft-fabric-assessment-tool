@@ -139,7 +139,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-blue-800">Assessment Questionnaire</h2>
           <div className="flex items-center">
-            <div className="mr-3">
+            <div>
               <label className="inline-flex items-center cursor-pointer">
                 <input 
                   type="checkbox" 
@@ -151,15 +151,18 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
                 <span className="ms-3 text-sm font-medium text-gray-700">Consultant View</span>
               </label>
             </div>
-            <button 
-              className="text-blue-600 hover:text-blue-800 flex items-center text-sm"
-              onClick={() => window.print()}
-            >
-              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-              </svg>
-              Print Assessment
-            </button>
+            {/* Only show print button on pages with assessment data (not on first page) */}
+            {step > 0 && (
+              <button 
+                className="ml-4 px-3 py-1.5 bg-blue-600 text-white rounded flex items-center text-sm hover:bg-blue-700 transition-colors shadow-sm"
+                onClick={() => window.print()}
+              >
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
+                Print Assessment
+              </button>
+            )}
           </div>
         </div>
         <p className="mb-6 text-gray-700 text-lg">
