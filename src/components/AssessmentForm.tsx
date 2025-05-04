@@ -3,11 +3,18 @@ import { AssessmentData } from '../App';
 import ToolTip from './ToolTip';
 import IndustrySelector from './IndustrySelector';
 
+interface ConsultantNote {
+  title: string;
+  content: string;
+  keyPoints?: string[];
+}
+
 interface AssessmentFormProps {
   onComplete: (data: AssessmentData) => void;
 }
 
 const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
+  const [showConsultantNotes, setShowConsultantNotes] = useState<boolean>(false);
   const [step, setStep] = useState(0);
   const [selectedIndustry, setSelectedIndustry] = useState<string>('general');
   const [formData, setFormData] = useState<AssessmentData>({
@@ -71,14 +78,118 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
     });
   };
 
+  // Consultant guidance notes for each step
+  const consultantGuidance: Record<number, ConsultantNote> = {
+    0: {
+      title: 'Industry Selection Guidance',
+      content: 'The industry selection helps tailor recommendations and ROI calculations to the client\'s specific vertical. Each industry has unique Microsoft Fabric adoption patterns and considerations.',
+      keyPoints: [
+        'Financial Services: Emphasize governance, compliance, and fraud detection capabilities',
+        'Healthcare: Focus on HIPAA compliance and patient data integration',
+        'Manufacturing: Highlight IoT integration and supply chain optimization',
+        'Retail: Emphasize customer 360 views and inventory optimization',
+        'Public Sector: Focus on data sovereignty and security classification'
+      ]
+    },
+    1: {
+      title: 'Infrastructure Assessment Guidance',
+      content: 'Understanding the client\'s current infrastructure helps identify migration paths and potential challenges. Microsoft Fabric adoption is typically smoother for organizations already using Microsoft technologies.',
+      keyPoints: [
+        'SQL Server users will find direct migration paths to Fabric',
+        'Azure customers can leverage existing investments',
+        'Competitor platforms may require more complex migration strategies',
+        'Identify potential integration challenges early'
+      ]
+    },
+    2: {
+      title: 'Data Characteristics Guidance',
+      content: 'This section helps assess the complexity and scale of the client\'s data landscape. Microsoft Fabric excels with diverse data types and high volumes but implementation complexity increases with data variety.',
+      keyPoints: [
+        'High data volumes may require phased migration approach',
+        'Real-time needs align well with Fabric\'s streaming capabilities',
+        'Unstructured data may require additional lakehouse configurations',
+        'Consider data growth projections for the next 2-3 years'
+      ]
+    },
+    3: {
+      title: 'Microsoft Ecosystem Guidance',
+      content: 'Existing Microsoft investments significantly impact Fabric adoption success. Power BI usage is a particularly strong indicator of Fabric readiness as it integrates seamlessly with Fabric.',
+      keyPoints: [
+        'Power BI users have shorter learning curves for Fabric adoption',
+        'Existing Azure services can be integrated with minimal disruption',
+        'Microsoft 365 offers collaboration advantages with Fabric',
+        'Identify potential champions among existing Microsoft tool users'
+      ]
+    },
+    4: {
+      title: 'Business Requirements Guidance',
+      content: 'Understanding business constraints helps set realistic implementation timelines and budget expectations. This information is crucial for creating a phased implementation approach.',
+      keyPoints: [
+        'Budget constraints may indicate starting with specific Fabric workloads',
+        'Urgent timelines might suggest a minimal viable product approach',
+        'Compliance requirements may necessitate specific configurations',
+        'Data sovereignty needs impact datacenter region selection'
+      ]
+    }
+  };
+  
   return (
     <div className="container">
       <div className="card shadow-lg">
-        <h2 className="text-2xl font-bold mb-4 text-blue-800">Assessment Questionnaire</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold text-blue-800">Assessment Questionnaire</h2>
+          <div className="flex items-center">
+            <div className="mr-3">
+              <label className="inline-flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  className="sr-only peer" 
+                  checked={showConsultantNotes}
+                  onChange={() => setShowConsultantNotes(!showConsultantNotes)}
+                />
+                <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                <span className="ms-3 text-sm font-medium text-gray-700">Consultant View</span>
+              </label>
+            </div>
+            <button 
+              className="text-blue-600 hover:text-blue-800 flex items-center text-sm"
+              onClick={() => window.print()}
+            >
+              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+              </svg>
+              Print Assessment
+            </button>
+          </div>
+        </div>
         <p className="mb-6 text-gray-700 text-lg">
           Complete this interactive questionnaire to determine if Microsoft Fabric is the right solution 
           for your organization's data and analytics needs.
         </p>
+        
+        {/* Consultant Notes Panel - conditionally rendered */}
+        {showConsultantNotes && step >= 0 && step <= 4 && (
+          <div className="consultant-notes mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center mb-3">
+              <svg className="w-5 h-5 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+              <h3 className="text-lg font-semibold text-blue-800">{consultantGuidance[step]?.title}</h3>
+            </div>
+            <p className="text-gray-700 mb-3">{consultantGuidance[step]?.content}</p>
+            
+            {consultantGuidance[step]?.keyPoints && (
+              <div>
+                <h4 className="font-medium text-blue-700 mb-2">Key Discussion Points:</h4>
+                <ul className="list-disc pl-5 space-y-1">
+                  {consultantGuidance[step]?.keyPoints?.map((point, index) => (
+                    <li key={index} className="text-gray-700">{point}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
 
         {step > 0 && (
           <div className="progress-bar mb-8 bg-gray-100 p-4 rounded-lg shadow-sm">
