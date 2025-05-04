@@ -43,6 +43,53 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ assessmentData, fabri
     }
   };
 
+  // Get industry-specific recommendation text
+  const getIndustryInsight = () => {
+    const industry = assessmentData.industry || 'general';
+    
+    // Industry-specific insights
+    const insights = {
+      'financial-services': {
+        title: 'Financial Services Insight',
+        content: 'Microsoft Fabric provides significant value for financial institutions through enhanced data governance, risk analytics, and customer intelligence capabilities. With built-in compliance features, it can help address regulatory requirements while enabling faster time-to-insight.',
+        keyConsideration: fabricScore >= 70 ? 'Prioritize data governance and security implementation phases' : 'Consider a staged approach, starting with regulatory reporting use cases'
+      },
+      'healthcare': {
+        title: 'Healthcare Insight',
+        content: 'Microsoft Fabric offers healthcare organizations a unified platform for clinical, operational, and financial analytics. Its ability to integrate structured and unstructured data can deliver a comprehensive view of patient care while maintaining PHI security and HIPAA compliance.',
+        keyConsideration: fabricScore >= 70 ? 'Focus on interoperability with clinical systems and patient data security' : 'Begin with operational analytics before expanding to clinical use cases'
+      },
+      'manufacturing': {
+        title: 'Manufacturing Insight',
+        content: 'For manufacturing organizations, Microsoft Fabric excels at integrating IoT and operational data with business analytics. This enables predictive maintenance, supply chain optimization, and quality improvement through a single unified data platform.',
+        keyConsideration: fabricScore >= 70 ? 'Leverage real-time analytics for shop floor integration' : 'Start with supply chain analytics before expanding to IoT data sources'
+      },
+      'retail': {
+        title: 'Retail Insight',
+        content: 'Retail organizations can leverage Microsoft Fabric to create a unified view of customers, inventory, and operations. This enables improved demand forecasting, personalized marketing, and optimized inventory management in an increasingly competitive marketplace.',
+        keyConsideration: fabricScore >= 70 ? 'Integrate both online and in-store data sources for a complete customer view' : 'Focus on inventory optimization as an initial high-ROI use case'
+      },
+      'public-sector': {
+        title: 'Public Sector Insight',
+        content: 'Microsoft Fabric helps government agencies and educational institutions break down data silos while maintaining strict security and sovereignty requirements. FedRAMP compliance capabilities ensure sensitive data remains protected while enabling cross-agency analytics.',
+        keyConsideration: fabricScore >= 70 ? 'Prioritize data classification and security controls during implementation' : 'Consider starting with a bounded, high-value pilot project'
+      },
+      'energy': {
+        title: 'Energy & Utilities Insight',
+        content: 'For energy companies, Microsoft Fabric provides the scale and performance needed for large-scale sensor data analytics, grid optimization, and regulatory reporting. Its integration with Azure services supports comprehensive IoT analytics and operational dashboards.',
+        keyConsideration: fabricScore >= 70 ? 'Implement real-time analytics for operational monitoring' : 'Begin with compliance reporting scenarios for quick wins'
+      },
+      'general': {
+        title: 'Business Value Insight',
+        content: 'Microsoft Fabric offers organizations a comprehensive data platform that eliminates the need for siloed tools and reduces total cost of ownership. By unifying data integration, storage, and analytics, it enables faster insights and improved decision-making across the organization.',
+        keyConsideration: fabricScore >= 70 ? 'Plan for a phased approach to transition from existing systems' : 'Start with a focused pilot project to demonstrate value'
+      }
+    };
+    
+    // Return insight for the selected industry, defaulting to general if not found
+    return insights[industry as keyof typeof insights] || insights.general;
+  };
+  
   // Get recommendation text based on score
   const getRecommendation = () => {
     if (fabricScore >= 80) {
@@ -346,6 +393,33 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ assessmentData, fabri
                 })()}
               </div>
             </div>
+          </div>
+          
+          {/* Industry-Specific Insights Section */}
+          <div className="industry-insights mb-8 pb-6 border-b">
+            <h2 className="text-2xl font-bold mb-4">Industry-Specific Insights</h2>
+            
+            {(() => {
+              const insight = getIndustryInsight();
+              return (
+                <div className="bg-blue-50 p-5 rounded-lg border border-blue-200">
+                  <h3 className="text-xl font-semibold text-blue-800 mb-3">{insight.title}</h3>
+                  <p className="mb-4 text-gray-700">{insight.content}</p>
+                  
+                  <div className="flex items-start mt-3">
+                    <div className="flex-shrink-0 mt-1">
+                      <svg className="h-5 w-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div className="ml-3">
+                      <h4 className="text-sm font-medium text-blue-800">Key Consideration</h4>
+                      <p className="text-sm text-blue-700">{insight.keyConsideration}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
           
           <div className="recommendations mb-8 pb-6 border-b">

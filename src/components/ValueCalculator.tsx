@@ -28,6 +28,48 @@ const ValueCalculator: React.FC<ValueCalculatorProps> = ({ assessmentData, fabri
   
   // Calculate the value proposition metrics
   const calculateValueProposition = () => {
+    // Apply industry-specific multipliers
+    const industryMultipliers = {
+      'financial-services': {
+        costSavings: 1.2,  // Financial services can see higher cost savings
+        timeToValue: 0.9,  // Slightly faster implementation
+        productivity: 1.1  // Slightly higher productivity gains
+      },
+      'healthcare': {
+        costSavings: 1.15, // Healthcare has significant compliance cost savings
+        timeToValue: 1.1,  // Slightly longer due to compliance
+        productivity: 1.25 // High productivity gains in clinical analytics
+      },
+      'manufacturing': {
+        costSavings: 1.1,  // Good cost savings from IoT/OT integration
+        timeToValue: 1.0,  // Average implementation time
+        productivity: 1.2  // Good productivity from predictive maintenance
+      },
+      'retail': {
+        costSavings: 1.25, // High cost savings from inventory optimization
+        timeToValue: 0.9,  // Faster implementation
+        productivity: 1.15 // Good gains from customer analytics
+      },
+      'public-sector': {
+        costSavings: 0.9,  // Lower due to procurement constraints
+        timeToValue: 1.3,  // Longer implementation cycles
+        productivity: 1.05 // Modest productivity gains
+      },
+      'energy': {
+        costSavings: 1.15, // Good savings from operational efficiency
+        timeToValue: 1.1,  // Longer due to OT integration
+        productivity: 1.1  // Moderate productivity gains
+      },
+      'general': {
+        costSavings: 1.0,  // Baseline
+        timeToValue: 1.0,  // Baseline
+        productivity: 1.0  // Baseline
+      }
+    };
+    
+    // Get multipliers for the selected industry, defaulting to general if not found
+    const industry = assessmentData.industry || 'general';
+    const multiplier = industryMultipliers[industry as keyof typeof industryMultipliers] || industryMultipliers.general;
     // Base calculations scaled by organization size and current costs
     const sizeFactor = organizationSize / 500; // Normalize to 500 employees
     const costFactor = currentAnnualCosts / 500000; // Normalize to $500k baseline
@@ -53,8 +95,8 @@ const ValueCalculator: React.FC<ValueCalculatorProps> = ({ assessmentData, fabri
       costSavingsPercent += 0.05;
     }
     
-    // Calculate annual cost savings
-    const costSavings = Math.round(currentAnnualCosts * costSavingsPercent);
+    // Calculate annual cost savings with industry-specific multiplier
+    const costSavings = Math.round(currentAnnualCosts * costSavingsPercent * multiplier.costSavings);
     
     // Calculate time to value (in months)
     let timeToValue = 12; // Baseline implementation time
@@ -69,8 +111,11 @@ const ValueCalculator: React.FC<ValueCalculatorProps> = ({ assessmentData, fabri
     if (assessmentData.realTimeNeeds > 8) timeToValue += 1;
     if (assessmentData.complianceRequirements.length > 3) timeToValue += 2;
     
+    // Apply industry-specific time to value multiplier
+    timeToValue = timeToValue * multiplier.timeToValue;
+    
     // Ensure minimum of 3 months
-    timeToValue = Math.max(3, timeToValue);
+    timeToValue = Math.max(3, Math.round(timeToValue));
     
     // Calculate productivity improvements
     // Estimating hours saved per employee per year
@@ -87,7 +132,7 @@ const ValueCalculator: React.FC<ValueCalculatorProps> = ({ assessmentData, fabri
     
     // Knowledge worker multiplier (assuming 30% of employees are knowledge workers who benefit)
     const knowledgeWorkerPercent = 0.3;
-    const annualProductivityHours = Math.round(organizationSize * knowledgeWorkerPercent * hoursPerEmployeeAnnual);
+    const annualProductivityHours = Math.round(organizationSize * knowledgeWorkerPercent * hoursPerEmployeeAnnual * multiplier.productivity);
     
     // Productivity value in dollars
     const productivityValue = annualProductivityHours * averageHourlyRate;

@@ -10,6 +10,9 @@ import ValueCalculator from './components/ValueCalculator'
 
 // Define the structure of our assessment data
 export interface AssessmentData {
+  // Industry classification
+  industry?: string;
+  
   // Current infrastructure
   currentInfrastructure: string[];
   dataWarehouseSolution: string;

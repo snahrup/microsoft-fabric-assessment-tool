@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { AssessmentData } from '../App';
 import ToolTip from './ToolTip';
+import IndustrySelector from './IndustrySelector';
 
 interface AssessmentFormProps {
   onComplete: (data: AssessmentData) => void;
 }
 
 const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
+  const [selectedIndustry, setSelectedIndustry] = useState<string>('general');
   const [formData, setFormData] = useState<AssessmentData>({
     currentInfrastructure: [],
     dataWarehouseSolution: '',
@@ -62,7 +64,11 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onComplete(formData);
+    // Include the selected industry in the assessment data
+    onComplete({
+      ...formData,
+      industry: selectedIndustry
+    });
   };
 
   return (
@@ -74,22 +80,42 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
           for your organization's data and analytics needs.
         </p>
 
-        <div className="progress-bar mb-8 bg-gray-100 p-4 rounded-lg shadow-sm">
-          <div className="flex justify-between text-sm mb-1 font-medium text-gray-700">
-            <span>Infrastructure</span>
-            <span>Data</span>
-            <span>Microsoft Tech</span>
-            <span>Requirements</span>
+        {step > 0 && (
+          <div className="progress-bar mb-8 bg-gray-100 p-4 rounded-lg shadow-sm">
+            <div className="flex justify-between text-sm mb-1 font-medium text-gray-700">
+              <span>Infrastructure</span>
+              <span>Data</span>
+              <span>Microsoft Tech</span>
+              <span>Requirements</span>
+            </div>
+            <div className="h-3 bg-gray-200 rounded-full">
+              <div 
+                className="h-3 bg-blue-600 rounded-full transition-all shadow-sm" 
+                style={{ width: `${(step / 4) * 100}%` }}
+              ></div>
+            </div>
           </div>
-          <div className="h-3 bg-gray-200 rounded-full">
-            <div 
-              className="h-3 bg-blue-600 rounded-full transition-all shadow-sm" 
-              style={{ width: `${(step / 4) * 100}%` }}
-            ></div>
-          </div>
-        </div>
+        )}
 
         <form onSubmit={handleSubmit}>
+          {step === 0 && (
+            <div className="slide-in">
+              {/* Industry Selection Step */}
+              <IndustrySelector 
+                onIndustrySelect={(industry) => setSelectedIndustry(industry)}
+                selectedIndustry={selectedIndustry}
+              />
+              
+              <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <h3 className="text-lg font-semibold text-blue-800 mb-2">Why is this important?</h3>
+                <p className="text-gray-700">
+                  Different industries have unique Microsoft Fabric requirements and adoption considerations. 
+                  By selecting your industry, we can tailor the assessment to provide more relevant recommendations 
+                  and accurate ROI projections for your specific needs.
+                </p>
+              </div>
+            </div>
+          )}
           {step === 1 && (
             <div className="slide-in bg-white p-6 rounded-lg">
               <h3 className="text-xl font-semibold mb-4">Current Infrastructure</h3>
@@ -351,7 +377,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
           )}
 
           <div className="flex justify-between mt-8">
-            {step > 1 && (
+            {step > 0 && (
               <button 
                 type="button" 
                 onClick={prevStep} 
@@ -360,7 +386,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
                 &larr; Previous
               </button>
             )}
-            {step < 4 ? (
+            {step < 5 ? (
               <button 
                 type="button" 
                 onClick={nextStep} 
