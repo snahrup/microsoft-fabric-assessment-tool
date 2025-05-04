@@ -30,7 +30,7 @@ Microsoft Fabric is an all-in-one analytics solution that combines data engineer
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/microsoft-fabric-assessment-tool.git
+git clone https://github.com/snahrup/microsoft-fabric-assessment-tool.git
 cd microsoft-fabric-assessment-tool
 
 # Install dependencies
