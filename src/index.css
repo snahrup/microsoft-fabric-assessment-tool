@@ -83,11 +83,37 @@ input[type="range"] {
   height: 10px;
   appearance: none;
   margin: 10px 0;
-  background: #eee;
+  background: #e0e0e0;
   border-radius: 8px;
-  background-image: linear-gradient(var(--range-color), var(--range-color));
-  background-repeat: no-repeat;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 10px;
+  border-radius: 8px;
+  background: #e0e0e0;
+}
+
+input[type="range"]::-moz-range-track {
+  height: 10px;
+  border-radius: 8px;
+  background: #e0e0e0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid var(--primary-color);
+  margin-top: -6px;
+  position: relative;
+  z-index: 10;
 }
 
 .card {

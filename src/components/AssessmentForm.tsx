@@ -352,17 +352,28 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
 
           <div className="flex justify-between mt-8">
             {step > 1 && (
-              <button type="button" onClick={prevStep} className="bg-gray-500 text-white py-2 px-4 rounded">
-                Previous
+              <button 
+                type="button" 
+                onClick={prevStep} 
+                className="bg-gray-300 text-gray-800 py-3 px-6 rounded-lg font-medium text-lg shadow-md hover:bg-gray-400 transition-colors"
+              >
+                &larr; Previous
               </button>
             )}
             {step < 4 ? (
-              <button type="button" onClick={nextStep} className="bg-primary text-white py-2 px-4 rounded ml-auto">
-                Next
+              <button 
+                type="button" 
+                onClick={nextStep} 
+                className="bg-blue-600 text-white py-3 px-6 rounded-lg font-medium text-lg shadow-md hover:bg-blue-700 transition-colors ml-auto"
+              >
+                Next &rarr;
               </button>
             ) : (
-              <button type="submit" className="bg-success text-white py-2 px-4 rounded ml-auto">
-                Calculate Suitability
+              <button 
+                type="submit" 
+                className="bg-green-600 text-white py-3 px-6 rounded-lg font-medium text-lg shadow-md hover:bg-green-700 transition-colors ml-auto"
+              >
+                Complete Assessment
               </button>
             )}
           </div>
