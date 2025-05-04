@@ -25,3 +25,9 @@ dev-debug.log
 # Task files
 tasks.json
 tasks/ 
+.cursor/mcp.json
+.gitignore
+.cursor/rules/cursor_rules.mdc
+.cursor/rules/taskmaster.mdc
+.cursor/rules/self_improve.mdc
+.cursor/rules/dev_workflow.mdc
