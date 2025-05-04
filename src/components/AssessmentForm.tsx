@@ -67,23 +67,23 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
 
   return (
     <div className="container">
-      <div className="card">
-        <h2 className="text-2xl font-bold mb-4">Assessment Questionnaire</h2>
-        <p className="mb-6">
+      <div className="card shadow-lg">
+        <h2 className="text-2xl font-bold mb-4 text-blue-800">Assessment Questionnaire</h2>
+        <p className="mb-6 text-gray-700 text-lg">
           Complete this interactive questionnaire to determine if Microsoft Fabric is the right solution 
           for your organization's data and analytics needs.
         </p>
 
-        <div className="progress-bar mb-8">
-          <div className="flex justify-between text-sm mb-1">
+        <div className="progress-bar mb-8 bg-gray-100 p-4 rounded-lg shadow-sm">
+          <div className="flex justify-between text-sm mb-1 font-medium text-gray-700">
             <span>Infrastructure</span>
             <span>Data</span>
             <span>Microsoft Tech</span>
             <span>Requirements</span>
           </div>
-          <div className="h-2 bg-gray-200 rounded-full">
+          <div className="h-3 bg-gray-200 rounded-full">
             <div 
-              className="h-2 bg-primary rounded-full transition-all" 
+              className="h-3 bg-blue-600 rounded-full transition-all shadow-sm" 
               style={{ width: `${(step / 4) * 100}%` }}
             ></div>
           </div>
@@ -91,11 +91,11 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
 
         <form onSubmit={handleSubmit}>
           {step === 1 && (
-            <div className="slide-in">
+            <div className="slide-in bg-white p-6 rounded-lg">
               <h3 className="text-xl font-semibold mb-4">Current Infrastructure</h3>
               
               <div className="mb-4">
-                <label className="block mb-2">
+                <label className="block mb-2 font-semibold text-gray-800">
                   Which technologies are currently part of your data infrastructure?
                   <ToolTip text="Select all platforms and services you currently use" />
                 </label>
@@ -107,23 +107,23 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
                         id={tech}
                         checked={formData.currentInfrastructure.includes(tech)}
                         onChange={() => handleCheckboxChange('currentInfrastructure', tech)}
-                        className="mr-2"
+                        className="mr-2 w-5 h-5 accent-blue-600"
                       />
-                      <label htmlFor={tech}>{tech}</label>
+                      <label htmlFor={tech} className="text-gray-700 font-medium">{tech}</label>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div className="mb-4">
-                <label className="block mb-2">
+                <label className="block mb-2 font-semibold text-gray-800">
                   What is your primary data warehouse solution?
                   <ToolTip text="The main system where you store and analyze structured data" />
                 </label>
                 <select
                   value={formData.dataWarehouseSolution}
                   onChange={(e) => handleInputChange('dataWarehouseSolution', e.target.value)}
-                  className="w-full p-2"
+                  className="w-full p-3 bg-white border-gray-300 text-gray-800 font-medium shadow-sm"
                 >
                   <option value="">Select an option</option>
                   <option value="Azure Synapse">Azure Synapse</option>
@@ -137,14 +137,14 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
               </div>
 
               <div className="mb-4">
-                <label className="block mb-2">
+                <label className="block mb-2 font-semibold text-gray-800">
                   What business intelligence tool do you primarily use?
                   <ToolTip text="The main tool used to visualize and analyze data" />
                 </label>
                 <select
                   value={formData.businessIntelligenceTool}
                   onChange={(e) => handleInputChange('businessIntelligenceTool', e.target.value)}
-                  className="w-full p-2"
+                  className="w-full p-3 bg-white border-gray-300 text-gray-800 font-medium shadow-sm"
                 >
                   <option value="">Select an option</option>
                   <option value="Power BI">Power BI</option>
@@ -160,11 +160,11 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
           )}
 
           {step === 2 && (
-            <div className="slide-in">
+            <div className="slide-in bg-white p-6 rounded-lg">
               <h3 className="text-xl font-semibold mb-4">Data Characteristics</h3>
               
               <div className="mb-4">
-                <label className="block mb-2">
+                <label className="block mb-2 font-semibold text-gray-800">
                   What types of data does your organization work with?
                   <ToolTip text="Select all that apply to your organization" />
                 </label>
@@ -176,21 +176,21 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
                         id={type}
                         checked={formData.dataTypes.includes(type)}
                         onChange={() => handleCheckboxChange('dataTypes', type)}
-                        className="mr-2"
+                        className="mr-2 w-5 h-5 accent-blue-600"
                       />
-                      <label htmlFor={type}>{type}</label>
+                      <label htmlFor={type} className="text-gray-700 font-medium">{type}</label>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div className="mb-4">
-                <label className="block mb-2">
+                <label className="block mb-2 font-semibold text-gray-800">
                   How would you rate your data volume?
                   <ToolTip text="1 = Low (GBs), 10 = Very high (PBs+)" />
                 </label>
-                <div className="flex items-center">
-                  <span>Small</span>
+                <div className="flex items-center gap-4">
+                  <span className="font-medium text-gray-700">Small</span>
                   <input
                     type="range"
                     min="1"
@@ -199,7 +199,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
                     onChange={(e) => handleSliderChange('dataVolume', parseInt(e.target.value))}
                     className="mx-4 flex-grow"
                   />
-                  <span>Massive</span>
+                  <span className="font-medium text-gray-700">Large</span>
                 </div>
                 <div className="text-center font-semibold">
                   {formData.dataVolume}
@@ -207,12 +207,12 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
               </div>
 
               <div className="mb-4">
-                <label className="block mb-2">
+                <label className="block mb-2 font-semibold text-gray-800">
                   How important is real-time data processing for your organization?
                   <ToolTip text="1 = Not important, 10 = Critical" />
                 </label>
-                <div className="flex items-center">
-                  <span>Not important</span>
+                <div className="flex items-center gap-4">
+                  <span className="font-medium text-gray-700">Not important</span>
                   <input
                     type="range"
                     min="1"
@@ -221,7 +221,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
                     onChange={(e) => handleSliderChange('realTimeNeeds', parseInt(e.target.value))}
                     className="mx-4 flex-grow"
                   />
-                  <span>Critical</span>
+                  <span className="font-medium text-gray-700">Critical</span>
                 </div>
                 <div className="text-center font-semibold">
                   {formData.realTimeNeeds}
@@ -231,11 +231,11 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
           )}
 
           {step === 3 && (
-            <div className="slide-in">
+            <div className="slide-in bg-white p-6 rounded-lg">
               <h3 className="text-xl font-semibold mb-4">Microsoft Ecosystem</h3>
               
               <div className="mb-4">
-                <label className="block mb-2">
+                <label className="block mb-2 font-semibold text-gray-800">
                   Which Microsoft products does your organization currently use?
                   <ToolTip text="Select all Microsoft technologies your organization has invested in" />
                 </label>
@@ -247,21 +247,21 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
                         id={tech}
                         checked={formData.microsoftInvestments.includes(tech)}
                         onChange={() => handleCheckboxChange('microsoftInvestments', tech)}
-                        className="mr-2"
+                        className="mr-2 w-5 h-5 accent-blue-600"
                       />
-                      <label htmlFor={tech}>{tech}</label>
+                      <label htmlFor={tech} className="text-gray-700 font-medium">{tech}</label>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div className="mb-4">
-                <label className="block mb-2">
+                <label className="block mb-2 font-semibold text-gray-800">
                   If you use Power BI, how central is it to your analytics strategy?
                   <ToolTip text="1 = Not used, 10 = Essential" />
                 </label>
-                <div className="flex items-center">
-                  <span>Not used</span>
+                <div className="flex items-center gap-4">
+                  <span className="font-medium text-gray-700">Not used</span>
                   <input
                     type="range"
                     min="1"
@@ -270,7 +270,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
                     onChange={(e) => handleSliderChange('powerBiUsage', parseInt(e.target.value))}
                     className="mx-4 flex-grow"
                   />
-                  <span>Essential</span>
+                  <span className="font-medium text-gray-700">Essential</span>
                 </div>
                 <div className="text-center font-semibold">
                   {formData.powerBiUsage}
@@ -280,16 +280,16 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
           )}
 
           {step === 4 && (
-            <div className="slide-in">
+            <div className="slide-in bg-white p-6 rounded-lg">
               <h3 className="text-xl font-semibold mb-4">Business Requirements & Compliance</h3>
               
               <div className="mb-4">
-                <label className="block mb-2">
+                <label className="block mb-2 font-semibold text-gray-800">
                   How significant are budget constraints for your data platform?
                   <ToolTip text="1 = Extremely tight budget, 10 = Budget is not a concern" />
                 </label>
-                <div className="flex items-center">
-                  <span>Very limited</span>
+                <div className="flex items-center gap-4">
+                  <span className="font-medium text-gray-700">Very limited</span>
                   <input
                     type="range"
                     min="1"
@@ -298,7 +298,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
                     onChange={(e) => handleSliderChange('budgetConstraint', parseInt(e.target.value))}
                     className="mx-4 flex-grow"
                   />
-                  <span>Unlimited</span>
+                  <span className="font-medium text-gray-700">No constraints</span>
                 </div>
                 <div className="text-center font-semibold">
                   {formData.budgetConstraint}
@@ -306,7 +306,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
               </div>
 
               <div className="mb-4">
-                <label className="block mb-2">
+                <label className="block mb-2 font-semibold text-gray-800">
                   What compliance requirements affect your data strategy?
                   <ToolTip text="Select all compliance standards that your organization must adhere to" />
                 </label>
@@ -318,21 +318,21 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
                         id={req}
                         checked={formData.complianceRequirements.includes(req)}
                         onChange={() => handleCheckboxChange('complianceRequirements', req)}
-                        className="mr-2"
+                        className="mr-2 w-5 h-5 accent-blue-600"
                       />
-                      <label htmlFor={req}>{req}</label>
+                      <label htmlFor={req} className="text-gray-700 font-medium">{req}</label>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div className="mb-4">
-                <label className="block mb-2">
+                <label className="block mb-2 font-semibold text-gray-800">
                   How important is data sovereignty for your organization?
                   <ToolTip text="1 = Not important, 10 = Critical. This refers to needing data to reside in specific geographic regions." />
                 </label>
-                <div className="flex items-center">
-                  <span>Not important</span>
+                <div className="flex items-center gap-4">
+                  <span className="font-medium text-gray-700">Not important</span>
                   <input
                     type="range"
                     min="1"
@@ -341,7 +341,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
                     onChange={(e) => handleSliderChange('dataSovereigntyNeeds', parseInt(e.target.value))}
                     className="mx-4 flex-grow"
                   />
-                  <span>Critical</span>
+                  <span className="font-medium text-gray-700">Critical</span>
                 </div>
                 <div className="text-center font-semibold">
                   {formData.dataSovereigntyNeeds}

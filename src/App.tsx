@@ -69,7 +69,7 @@ function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className="app-container bg-gray-50 min-h-screen">
       <Header />
       
       {currentStep === 'assessment' && (
