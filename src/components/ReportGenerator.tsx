@@ -1,7 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { AssessmentData } from '../App';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { calculateScores } from '../utils/calculateScores';
 
 interface ReportGeneratorProps {
   assessmentData: AssessmentData;
@@ -233,6 +234,120 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ assessmentData, fabri
             </div>
           </div>
           
+          <div className="executive-summary mb-8 pb-6 border-b bg-blue-50 p-6 rounded-lg">
+            <h2 className="text-2xl font-bold mb-4 text-blue-900">Executive Summary</h2>
+            
+            {/* Executive Summary Content */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div>
+                {/* Overall Readiness */}
+                <div className="bg-white p-4 rounded-lg shadow-sm">
+                  <h3 className="text-lg font-semibold text-blue-800 mb-2">Overall Readiness</h3>
+                  {(() => {
+                    const scores = calculateScores(assessmentData);
+                    const totalScore = scores.data + scores.analytics + scores.governance + scores.culture;
+                    const maxScore = 40; // Assuming 10 points max per category
+                    const overallPercentage = Math.round((totalScore / maxScore) * 100);
+                    
+                    let readinessLevel, readinessColor;
+                    if (overallPercentage >= 80) {
+                      readinessLevel = 'High';
+                      readinessColor = 'text-green-600';
+                    } else if (overallPercentage >= 60) {
+                      readinessLevel = 'Medium';
+                      readinessColor = 'text-yellow-600';
+                    } else {
+                      readinessLevel = 'Low';
+                      readinessColor = 'text-red-600';
+                    }
+                    
+                    return (
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-700 font-medium">Fabric Readiness:</span>
+                        <span className={`text-xl font-bold ${readinessColor}`}>
+                          {readinessLevel} ({overallPercentage}%)
+                        </span>
+                      </div>
+                    );
+                  })()} 
+                </div>
+              </div>
+              
+              <div>
+                {/* Expected Business Impact */}
+                <div className="bg-white p-4 rounded-lg shadow-sm">
+                  <h3 className="text-lg font-semibold text-blue-800 mb-2">Business Impact</h3>
+                  <p className="text-gray-700">
+                    {fabricScore >= 75 
+                      ? 'High ROI potential within 6-12 months' 
+                      : fabricScore >= 50 
+                        ? 'Moderate ROI potential within 12-18 months'
+                        : 'Long-term ROI potential, 18+ months with proper implementation'}
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Key Strengths & Opportunities */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="bg-green-50 p-4 rounded-lg shadow-sm">
+                <h3 className="text-lg font-semibold text-green-800 mb-2">Key Strengths</h3>
+                {(() => {
+                  const scores = calculateScores(assessmentData);
+                  const categories = [
+                    { name: 'Data Integration', score: scores.data },
+                    { name: 'Analytics Capabilities', score: scores.analytics },
+                    { name: 'Governance Framework', score: scores.governance },
+                    { name: 'Organizational Culture', score: scores.culture }
+                  ];
+                  
+                  const topStrength = categories.sort((a, b) => b.score - a.score)[0];
+                  
+                  return (
+                    <div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-700">Top Area:</span>
+                        <span className="font-medium text-green-600">{topStrength.name}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-700">Score:</span>
+                        <span className="font-medium">{topStrength.score}/10</span>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+              
+              <div className="bg-amber-50 p-4 rounded-lg shadow-sm">
+                <h3 className="text-lg font-semibold text-amber-800 mb-2">Key Opportunities</h3>
+                {(() => {
+                  const scores = calculateScores(assessmentData);
+                  const categories = [
+                    { name: 'Data Integration', score: scores.data },
+                    { name: 'Analytics Capabilities', score: scores.analytics },
+                    { name: 'Governance Framework', score: scores.governance },
+                    { name: 'Organizational Culture', score: scores.culture }
+                  ];
+                  
+                  const topOpportunity = categories.sort((a, b) => a.score - b.score)[0];
+                  
+                  return (
+                    <div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-700">Focus Area:</span>
+                        <span className="font-medium text-amber-600">{topOpportunity.name}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-700">Current Score:</span>
+                        <span className="font-medium">{topOpportunity.score}/10</span>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+          </div>
+          
           <div className="recommendations mb-8 pb-6 border-b">
             <h2 className="text-2xl font-bold mb-4">Recommendations</h2>
             <p className="mb-4">{getRecommendation()}</p>
@@ -243,6 +358,91 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ assessmentData, fabri
                 <li key={index} className="mb-2">{step}</li>
               ))}
             </ol>
+          </div>
+          
+          {/* Value Proposition Section */}
+          <div className="value-proposition mb-8 pb-6 border-b">
+            <h2 className="text-2xl font-bold mb-4">Business Value Proposition</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                <h3 className="text-xl font-semibold text-blue-800 mb-3">Financial Impact</h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between py-1 border-b border-blue-100">
+                    <span className="text-gray-600">Est. Annual Cost Savings:</span>
+                    <span className="font-bold text-blue-700">
+                      {(() => {
+                        // Calculate estimated cost savings
+                        let costSavingsPercent = 0.15; // Base 15% savings
+                        if (fabricScore >= 80) costSavingsPercent = 0.25;
+                        else if (fabricScore >= 60) costSavingsPercent = 0.20;
+                        
+                        const costSavings = 500000 * costSavingsPercent;
+                        return new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'USD',
+                          maximumFractionDigits: 0,
+                        }).format(costSavings);
+                      })()}
+                    </span>
+                  </div>
+                  
+                  <div className="flex justify-between py-1 border-b border-blue-100">
+                    <span className="text-gray-600">3-Year ROI Potential:</span>
+                    <span className="font-bold text-green-600">
+                      {(() => {
+                        let roiEstimate = 150; // Base 150% ROI
+                        if (fabricScore >= 80) roiEstimate = 250;
+                        else if (fabricScore >= 60) roiEstimate = 200;
+                        else if (fabricScore < 40) roiEstimate = 100;
+                        return `${roiEstimate}%`;
+                      })()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                <h3 className="text-xl font-semibold text-indigo-800 mb-3">Implementation Benefits</h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between py-1 border-b border-indigo-100">
+                    <span className="text-gray-600">Time to Value:</span>
+                    <span className="font-bold text-indigo-700">
+                      {(() => {
+                        let timeToValue = 12; // Baseline
+                        
+                        // Adjust for implementation factors
+                        if (assessmentData.microsoftInvestments.includes('Azure')) timeToValue -= 2;
+                        if (assessmentData.microsoftInvestments.includes('Power BI')) timeToValue -= 1;
+                        if (assessmentData.powerBiUsage > 7) timeToValue -= 2;
+                        
+                        // Adjust for complexity
+                        if (assessmentData.dataVolume > 8) timeToValue += 2;
+                        if (assessmentData.realTimeNeeds > 8) timeToValue += 1;
+                        if (assessmentData.complianceRequirements.length > 3) timeToValue += 2;
+                        
+                        timeToValue = Math.max(3, timeToValue); // Minimum 3 months
+                        return `${timeToValue} months`;
+                      })()}
+                    </span>
+                  </div>
+                  
+                  <div className="flex justify-between py-1 border-b border-indigo-100">
+                    <span className="text-gray-600">Productivity Improvement:</span>
+                    <span className="font-bold text-indigo-700">
+                      {(() => {
+                        // Productivity score from 1-5
+                        let prodScore = 3; // Default
+                        if (fabricScore >= 80) prodScore = 5;
+                        else if (fabricScore >= 60) prodScore = 4;
+                        else if (fabricScore < 40) prodScore = 2;
+                        return `${prodScore}/5`;
+                      })()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           
           <div className="fabric-benefits">
