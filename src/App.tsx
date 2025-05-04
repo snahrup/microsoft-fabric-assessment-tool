@@ -5,6 +5,7 @@ import ResultsDashboard from './components/ResultsDashboard'
 import ComparisonSection from './components/ComparisonSection'
 import ReportGenerator from './components/ReportGenerator'
 import Header from './components/Header'
+import ExecutiveSummary from './components/ExecutiveSummary'
 
 // Define the structure of our assessment data
 export interface AssessmentData {
@@ -32,7 +33,7 @@ export interface AssessmentData {
 }
 
 function App() {
-  const [currentStep, setCurrentStep] = useState<'assessment' | 'results' | 'comparison' | 'report'>('assessment');
+  const [currentStep, setCurrentStep] = useState<'assessment' | 'results' | 'comparison' | 'executive' | 'report'>('assessment');
   const [assessmentData, setAssessmentData] = useState<AssessmentData | null>(null);
   const [fabricScore, setFabricScore] = useState<number>(0);
 
@@ -88,8 +89,23 @@ function App() {
         <ComparisonSection
           assessmentData={assessmentData}
           fabricScore={fabricScore}
-          onContinue={() => setCurrentStep('report')}
+          onContinue={() => setCurrentStep('executive')}
         />
+      )}
+
+      {currentStep === 'executive' && assessmentData && (
+        <div className="container mx-auto py-8">
+          <div className="flex justify-between items-center mb-6 px-4">
+            <h2 className="text-2xl font-bold text-blue-800">Executive Summary</h2>
+            <button
+              onClick={() => setCurrentStep('report')}
+              className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-300 shadow-sm"
+            >
+              Continue to Report
+            </button>
+          </div>
+          <ExecutiveSummary formData={assessmentData} />
+        </div>
       )}
       
       {currentStep === 'report' && assessmentData && (
