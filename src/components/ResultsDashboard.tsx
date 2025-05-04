@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AssessmentData } from '../App';
 import Chart from 'chart.js/auto';
+import RadarChart from './RadarChart';
 
 interface ResultsDashboardProps {
   assessmentData: AssessmentData;
@@ -9,82 +10,16 @@ interface ResultsDashboardProps {
 }
 
 const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ assessmentData, fabricScore, onContinue }) => {
-  const radarChartRef = useRef<HTMLCanvasElement>(null);
   const scoreGaugeRef = useRef<HTMLCanvasElement>(null);
   const [chartsReady, setChartsReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedView, setSelectedView] = useState<'standard' | 'detailed'>('standard');
   
   useEffect(() => {
     // Charts instances reference for cleanup
-    let radarChart: Chart<'radar'> | null = null;
     let scoreChart: Chart<'doughnut'> | null = null;
 
     try {
-      // Create radar chart for capability comparison
-      if (radarChartRef.current) {
-        const radarCtx = radarChartRef.current.getContext('2d');
-        if (radarCtx) {
-          radarChart = new Chart(radarCtx, {
-            type: 'radar',
-            data: {
-              labels: [
-                'Microsoft Ecosystem Fit',
-                'Data Volume Capability',
-                'Real-Time Processing',
-                'Cost Efficiency',
-                'Security & Compliance',
-                'Integration Ease'
-              ],
-              datasets: [
-                {
-                  label: 'Your Organization',
-                  data: [
-                    // Microsoft Ecosystem score based on investments and Power BI usage
-                    Math.min(10, (assessmentData.microsoftInvestments.length * 1.5) + (assessmentData.powerBiUsage / 2)),
-                    // Data volume score
-                    assessmentData.dataVolume,
-                    // Real-time processing score
-                    assessmentData.realTimeNeeds,
-                    // Cost efficiency (inverse of budget constraint)
-                    Math.max(1, 11 - assessmentData.budgetConstraint),
-                    // Security & compliance based on requirements
-                    Math.min(10, 5 + assessmentData.complianceRequirements.length + (assessmentData.dataSovereigntyNeeds / 2)),
-                    // Integration ease (based on Microsoft products)
-                    Math.min(10, assessmentData.microsoftInvestments.length + 2)
-                  ],
-                  backgroundColor: 'rgba(0, 120, 212, 0.2)',
-                  borderColor: 'rgba(0, 120, 212, 1)',
-                  pointBackgroundColor: 'rgba(0, 120, 212, 1)',
-                  pointBorderColor: '#fff',
-                  pointHoverBackgroundColor: '#fff',
-                  pointHoverBorderColor: 'rgba(0, 120, 212, 1)'
-                },
-                {
-                  label: 'Microsoft Fabric Capability',
-                  data: [10, 9, 9, 7, 9, 10],
-                  backgroundColor: 'rgba(80, 230, 255, 0.2)',
-                  borderColor: 'rgba(80, 230, 255, 1)',
-                  pointBackgroundColor: 'rgba(80, 230, 255, 1)',
-                  pointBorderColor: '#fff',
-                  pointHoverBackgroundColor: '#fff',
-                  pointHoverBorderColor: 'rgba(80, 230, 255, 1)'
-                }
-              ]
-            },
-            options: {
-              scales: {
-                r: {
-                  min: 0,
-                  max: 10,
-                  ticks: {
-                    stepSize: 2
-                  }
-                }
-              }
-            }
-          });
-        }
-      }
 
       // Create gauge chart for overall score
       if (scoreGaugeRef.current) {
@@ -122,12 +57,11 @@ const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ assessmentData, fab
       setChartsReady(true);
     } catch (err) {
       console.error('Error creating charts:', err);
-      setError('Could not render assessment charts. Please try again.');
+      setError('An error occurred while creating the visualization. Please try again.');
     }
 
-    // Cleanup function to destroy charts on unmount
+    // Cleanup function to prevent memory leaks
     return () => {
-      if (radarChart) radarChart.destroy();
       if (scoreChart) scoreChart.destroy();
     };
   }, [assessmentData, fabricScore]);
@@ -201,12 +135,105 @@ const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ assessmentData, fab
         </div>
         
         <div className="radar-chart-container mt-8 bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-xl font-semibold mb-4 text-gray-800">Capability Alignment</h3>
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-semibold text-gray-800">Capability Alignment</h3>
+            <div className="view-toggle inline-flex rounded-md shadow-sm" role="group">
+              <button
+                type="button"
+                className={`px-4 py-2 text-sm font-medium rounded-l-lg ${selectedView === 'standard' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                onClick={() => setSelectedView('standard')}
+              >
+                Standard View
+              </button>
+              <button
+                type="button"
+                className={`px-4 py-2 text-sm font-medium rounded-r-lg ${selectedView === 'detailed' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                onClick={() => setSelectedView('detailed')}
+              >
+                Detailed View
+              </button>
+            </div>
+          </div>
+          
           {error ? (
             <div className="bg-red-100 text-red-700 p-4 rounded-lg shadow-sm">{error}</div>
           ) : (
-            <div className="h-80 w-full">
-              <canvas ref={radarChartRef}></canvas>
+            <div className="h-96 w-full">
+              {selectedView === 'standard' ? (
+                <div className="grid place-items-center h-full w-full">
+                  <RadarChart 
+                    assessmentData={assessmentData} 
+                    width={400} 
+                    height={400} 
+                    colorScheme="blue" 
+                  />
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="p-4 rounded-lg bg-gray-50">
+                    <h4 className="text-lg font-semibold mb-3 text-blue-800">Fabric Readiness</h4>
+                    <div className="grid place-items-center h-64">
+                      <RadarChart 
+                        assessmentData={assessmentData} 
+                        width={300} 
+                        height={300} 
+                        colorScheme="blue" 
+                      />
+                    </div>
+                  </div>
+                  <div className="p-4 rounded-lg bg-blue-50">
+                    <h4 className="text-lg font-semibold mb-3 text-blue-800">Implementation Complexity</h4>
+                    <div className="grid place-items-center h-64">
+                      <div className="p-4 bg-white rounded-lg shadow-sm">
+                        <div className="mb-4 grid grid-cols-2 gap-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium">Data Complexity:</span>
+                            <span className="text-sm font-bold text-blue-600">
+                              {assessmentData.dataVolume > 8 ? 'High' : 
+                               assessmentData.dataVolume > 5 ? 'Medium' : 'Low'}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium">Technical Fit:</span>
+                            <span className="text-sm font-bold text-blue-600">
+                              {assessmentData.microsoftInvestments.length > 2 ? 'Excellent' : 
+                               assessmentData.microsoftInvestments.length > 0 ? 'Good' : 'Limited'}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium">Time Constraint:</span>
+                            <span className="text-sm font-bold text-blue-600">
+                              {assessmentData.timeToImplementation < 4 ? 'Urgent' : 
+                               assessmentData.timeToImplementation < 7 ? 'Moderate' : 'Flexible'}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium">Budget:</span>
+                            <span className="text-sm font-bold text-blue-600">
+                              {assessmentData.budgetConstraint < 4 ? 'Limited' : 
+                               assessmentData.budgetConstraint < 7 ? 'Moderate' : 'Adequate'}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="text-center pt-4 border-t border-gray-200">
+                          <p className="text-sm text-gray-600">Implementation Timeframe Estimate:</p>
+                          <p className="text-lg font-bold text-blue-800">
+                            {assessmentData.microsoftInvestments.length > 2 && assessmentData.powerBiUsage > 7 
+                              ? '3-6 months' 
+                              : assessmentData.microsoftInvestments.length > 0 
+                                ? '6-9 months' 
+                                : '9-12 months'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
