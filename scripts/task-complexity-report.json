@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "generatedAt": "2025-05-04T13:08:21.998Z",
+    "tasksAnalyzed": 10,
+    "thresholdScore": 5,
+    "projectName": "Your Project Name",
+    "usedResearch": true
+  },
+  "complexityAnalysis": [
+    {
+      "taskId": 1,
+      "taskTitle": "Set up project structure and dependencies",
+      "complexityScore": 5,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down the project setup task into specific subtasks covering Vite initialization, dependency installation, folder structure creation, code quality tool configuration, and routing setup. For each subtask, include specific commands or steps needed.",
+      "reasoning": "This task involves multiple technical setup steps that are foundational but straightforward for experienced developers. It requires configuration of several tools and establishing project architecture, but follows standard patterns."
+    },
+    {
+      "taskId": 2,
+      "taskTitle": "Design and implement UI components using Microsoft design language",
+      "complexityScore": 8,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Break down the UI component implementation task into logical groups of related components (input controls, navigation elements, layout components, etc.). For each subtask, specify which Fluent UI design principles should be followed and how Tailwind CSS will be configured to match Microsoft's design language.",
+      "reasoning": "This task has high complexity due to the need to create multiple component types while adhering to specific design guidelines. It requires both technical implementation and design expertise, with careful attention to consistency across components."
+    },
+    {
+      "taskId": 3,
+      "taskTitle": "Create multi-step assessment form structure",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Divide the multi-step form implementation into subtasks covering the container structure, navigation controls, state management setup, validation logic, and persistence mechanism. For each subtask, specify the technical approach and how it integrates with the overall form framework.",
+      "reasoning": "This task involves complex state management across multiple form steps, requiring careful architecture decisions. The persistence requirements and navigation flow add significant complexity beyond basic form implementation."
+    },
+    {
+      "taskId": 4,
+      "taskTitle": "Implement assessment questions and data collection",
+      "complexityScore": 8,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Break down the assessment questions implementation into subtasks organized by question categories (infrastructure, data characteristics, etc.). Include subtasks for implementing different input types, conditional logic, contextual help, and the underlying data model.",
+      "reasoning": "This task is complex due to the variety of question types, conditional logic requirements, and the need to design an effective data model. The implementation must balance user experience with data collection needs across multiple assessment areas."
+    },
+    {
+      "taskId": 5,
+      "taskTitle": "Develop scoring algorithm for Microsoft Fabric suitability",
+      "complexityScore": 9,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Divide the scoring algorithm development into subtasks covering the definition of scoring categories, weighting factors, threshold establishment, calculation logic implementation, sub-score generation, and documentation of the methodology.",
+      "reasoning": "This is one of the most complex tasks as it requires domain expertise in Microsoft Fabric and data platform evaluation, along with algorithm design skills. The scoring logic must be sophisticated enough to provide meaningful recommendations while remaining transparent and justifiable."
+    },
+    {
+      "taskId": 6,
+      "taskTitle": "Build results dashboard with Chart.js visualizations",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down the dashboard implementation into subtasks covering the overall layout design, implementation of different chart types (bar/pie charts, radar charts), interactive elements, responsive design considerations, and textual explanation components.",
+      "reasoning": "This task requires both technical Chart.js implementation skills and data visualization expertise. Creating effective, interactive, and accessible visualizations that accurately represent the assessment results adds significant complexity."
+    },
+    {
+      "taskId": 7,
+      "taskTitle": "Implement comparison section with alternative solutions",
+      "complexityScore": 8,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Divide the comparison feature implementation into subtasks covering the data model for alternatives, comparison logic development, visualization design and implementation, contextual information integration, and filtering/customization options.",
+      "reasoning": "This task is complex because it requires deep knowledge of multiple data platform solutions beyond Microsoft Fabric. Creating fair, objective comparisons with appropriate visualizations requires both technical implementation skills and domain expertise."
+    },
+    {
+      "taskId": 8,
+      "taskTitle": "Create PDF report generator",
+      "complexityScore": 6,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down the PDF generation feature into subtasks covering the report template design, integration of jsPDF and html2canvas, content organization logic, customization options, and rendering optimization for charts and graphics.",
+      "reasoning": "This task has moderate complexity due to the technical challenges of converting web content to PDF format while maintaining visual fidelity. The structure of the report and ensuring proper rendering of charts adds complexity beyond basic PDF generation."
+    },
+    {
+      "taskId": 9,
+      "taskTitle": "Implement application state management and data persistence",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Divide the state management implementation into subtasks covering the core state architecture, persistence mechanism, session recovery functionality, assessment reset/creation features, and data export/import capabilities.",
+      "reasoning": "This task involves complex state management patterns and data persistence considerations. The requirements for session recovery and managing multiple assessments add significant complexity to what might otherwise be standard state management."
+    },
+    {
+      "taskId": 10,
+      "taskTitle": "Finalize application with testing and deployment setup",
+      "complexityScore": 6,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Break down the finalization process into subtasks covering end-to-end testing implementation, performance optimization, error handling, production build configuration, deployment documentation, and final UI refinements.",
+      "reasoning": "This task involves multiple distinct activities across testing, optimization, and deployment preparation. While each component is moderately complex, the breadth of areas to address and the need to ensure everything works together cohesively adds to the overall complexity."
+    }
+  ]
+}

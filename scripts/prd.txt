@@ -1,0 +1,35 @@
+# Microsoft Fabric Assessment Tool PRD
+
+## Overview
+A web-based assessment tool that helps organizations determine if Microsoft Fabric is the right solution for their data and analytics needs. The tool collects information about current infrastructure, data characteristics, Microsoft ecosystem investments, and business requirements, and then generates a suitability score, comparative analysis, and a downloadable report.
+
+## Core Features
+1. Interactive multi-step assessment form
+2. Scoring algorithm for Microsoft Fabric suitability
+3. Results dashboard with visualizations
+4. Comparison section with alternative solutions
+5. PDF report generator for results
+6. Responsive, modern UI (Microsoft design language)
+
+## User Stories
+- As a data architect, I want to answer questions about my environment so I can get a recommendation.
+- As a business analyst, I want to compare Microsoft Fabric to other solutions.
+- As an executive, I want to download a report to share with stakeholders.
+
+## Technical Stack
+- React + TypeScript
+- Tailwind CSS
+- Chart.js for data visualization
+- jsPDF/html2canvas for PDF export
+- Vite for build tooling
+
+## Success Criteria
+- Users can complete the assessment and receive a score
+- Results and comparisons are visually clear
+- Reports can be exported as PDF
+- The app runs locally and is easy to deploy
+
+## Stretch Goals
+- Authentication for saving assessments
+- Integration with Microsoft Graph API
+- Multi-language support
