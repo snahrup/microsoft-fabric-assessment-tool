@@ -7,6 +7,10 @@ interface ConsultantNote {
   title: string;
   content: string;
   keyPoints?: string[];
+  industryNotes?: Record<string, {
+    content: string;
+    keyPoints: string[];
+  }>;
 }
 
 interface AssessmentFormProps {
@@ -84,12 +88,90 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
       title: 'Industry Selection Guidance',
       content: 'The industry selection helps tailor recommendations and ROI calculations to the client\'s specific vertical. Each industry has unique Microsoft Fabric adoption patterns and considerations.',
       keyPoints: [
-        'Financial Services: Emphasize governance, compliance, and fraud detection capabilities',
-        'Healthcare: Focus on HIPAA compliance and patient data integration',
-        'Manufacturing: Highlight IoT integration and supply chain optimization',
-        'Retail: Emphasize customer 360 views and inventory optimization',
-        'Public Sector: Focus on data sovereignty and security classification'
-      ]
+        'Select the client\'s primary industry to tailor the assessment',
+        'Pay attention to industry-specific regulatory requirements',
+        'Consider hybrid or multi-industry scenarios for conglomerates',
+        'Competitive landscape varies significantly by industry'
+      ],
+      industryNotes: {
+        'financial-services': {
+          content: 'Financial institutions face unique challenges with data governance, regulatory compliance, and fraud detection. Microsoft Fabric offers significant advantages for these high-priority areas.',
+          keyPoints: [
+            'Regulatory requirement mapping: FINRA, SEC, Basel III, Dodd-Frank, PCI DSS',
+            'Fraud detection capabilities through ML services and real-time analytics',
+            'Customer 360 opportunities: cross-selling, risk assessment, personalization',
+            'Legacy system integration challenges with mainframes and proprietary systems',
+            'Data sovereignty requirements across global operations',
+            'Typical implementation timeline: 8-12 months for full deployment'
+          ]
+        },
+        'healthcare': {
+          content: 'Healthcare organizations need to balance data accessibility with strict privacy regulations. Microsoft Fabric provides robust security features while enabling clinical analytics.',
+          keyPoints: [
+            'HIPAA, HITECH compliance requirements integrated with Microsoft cloud certification',
+            'Integration challenges with EHR systems (Epic, Cerner, Meditech)',
+            'Clinical data standardization (FHIR, HL7)',
+            'Patient journey analytics and population health opportunities',
+            'Research data warehousing and collaboration capabilities',
+            'Typical implementation timeline: 10-14 months with phased approach'
+          ]
+        },
+        'manufacturing': {
+          content: 'Manufacturing companies have complex data ecosystems spanning operational technology (OT) and information technology (IT). Microsoft Fabric can unify these for predictive maintenance and supply chain optimization.',
+          keyPoints: [
+            'OT/IT integration patterns with industrial IoT data',
+            'Real-time monitoring and predictive maintenance use cases',
+            'Supply chain visibility and inventory optimization',
+            'Quality control analytics and root cause analysis',
+            'Integration with MES and ERP systems',
+            'Typical implementation timeline: 6-10 months with focused use cases'
+          ]
+        },
+        'retail': {
+          content: 'Retail organizations need to analyze large volumes of customer and inventory data across multiple channels. Microsoft Fabric provides the scale and flexibility needed for modern retail analytics.',
+          keyPoints: [
+            'Omnichannel data integration (online, in-store, mobile, social)',
+            'Customer behavior analysis and personalization opportunities',
+            'Inventory and supply chain optimization use cases',
+            'Point of sale (POS) integration patterns',
+            'Seasonal data variability and planning analytics',
+            'Typical implementation timeline: 6-9 months with phased rollout'
+          ]
+        },
+        'public-sector': {
+          content: 'Government agencies and educational institutions have strict security and procurement requirements. Microsoft Fabric offers FedRAMP compliance and secure data sharing capabilities.',
+          keyPoints: [
+            'FedRAMP, CJIS, and other government compliance requirements',
+            'Cross-agency data sharing opportunities and challenges',
+            'Legacy system integration (often 10-15+ years old)',
+            'Long procurement cycles requiring detailed justification',
+            'Budget constraints and fiscal year alignment',
+            'Typical implementation timeline: 12-18 months with multiple approval stages'
+          ]
+        },
+        'energy': {
+          content: 'Energy companies generate massive volumes of data from equipment sensors and operations. Microsoft Fabric provides the scale and specialized analytics needed for this industry.',
+          keyPoints: [
+            'SCADA system integration patterns',
+            'Real-time monitoring of grid performance and outage prediction',
+            'Regulatory reporting automation opportunities',
+            'Geographical data integration and visualization',
+            'Sustainability analytics and carbon footprint reduction',
+            'Typical implementation timeline: 8-12 months with phased approach'
+          ]
+        },
+        'general': {
+          content: 'For organizations spanning multiple industries or with unique needs, a general assessment provides flexibility while still identifying key Microsoft Fabric adoption areas.',
+          keyPoints: [
+            'Focus on common data platform needs across business units',
+            'Identify specific departmental use cases for initial pilots',
+            'Consider industry-specific modules as extension points',
+            'Map Microsoft Fabric capabilities to organizational data maturity',
+            'Cross-industry benchmarking opportunities',
+            'Typical implementation timeline: 8-10 months with agile approach'
+          ]
+        }
+      }
     },
     1: {
       title: 'Infrastructure Assessment Guidance',
@@ -165,33 +247,111 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
             )}
           </div>
         </div>
-        <p className="mb-6 text-gray-700 text-lg">
-          Complete this interactive questionnaire to determine if Microsoft Fabric is the right solution 
-          for your organization's data and analytics needs.
-        </p>
         
-        {/* Consultant Notes Panel - conditionally rendered */}
-        {showConsultantNotes && step >= 0 && step <= 4 && (
-          <div className="consultant-notes mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <div className="flex items-center mb-3">
-              <svg className="w-5 h-5 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-              </svg>
-              <h3 className="text-lg font-semibold text-blue-800">{consultantGuidance[step]?.title}</h3>
-            </div>
-            <p className="text-gray-700 mb-3">{consultantGuidance[step]?.content}</p>
+        {step === 0 ? (
+          <>
+            <p className="mb-4 text-gray-700 text-lg">
+              Select your industry below to tailor this assessment to your organization's specific needs and priorities.
+            </p>
             
-            {consultantGuidance[step]?.keyPoints && (
-              <div>
-                <h4 className="font-medium text-blue-700 mb-2">Key Discussion Points:</h4>
-                <ul className="list-disc pl-5 space-y-1">
-                  {consultantGuidance[step]?.keyPoints?.map((point, index) => (
-                    <li key={index} className="text-gray-700">{point}</li>
-                  ))}
-                </ul>
+            {/* Industry Selector Component - Always appears first on step 0 */}
+            <div className="slide-in mb-6">
+              <IndustrySelector 
+                onIndustrySelect={(industry) => {
+                  setFormData({ ...formData, industry: industry });
+                  setSelectedIndustry(industry);
+                }}
+                selectedIndustry={selectedIndustry}
+              />
+            </div>
+            
+            {/* Consultant Notes Panel - Below Industry Selector when shown */}
+            {showConsultantNotes && (
+              <div className="consultant-notes p-4 bg-blue-50 border border-blue-200 rounded-lg mb-6">
+                <div className="flex items-center mb-3">
+                  <svg className="w-5 h-5 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                  <h3 className="text-lg font-semibold text-blue-800">{consultantGuidance[0]?.title}</h3>
+                </div>
+                
+                {/* Industry-specific guidance when industry is selected */}
+                {formData.industry && consultantGuidance[0]?.industryNotes && consultantGuidance[0].industryNotes[formData.industry] ? (
+                  <div>
+                    <div className="bg-white p-3 rounded-lg shadow-sm mb-4 border-l-4 border-blue-500">
+                      <h4 className="font-semibold text-blue-800 mb-2">
+                        {formData.industry === 'financial-services' ? 'Financial Services' :
+                         formData.industry === 'public-sector' ? 'Public Sector' : 
+                         formData.industry.charAt(0).toUpperCase() + formData.industry.slice(1)} Industry Guidance
+                      </h4>
+                      <p className="text-gray-700 mb-3">{consultantGuidance[0].industryNotes[formData.industry].content}</p>
+                      
+                      <div className="mt-3">
+                        <h5 className="font-medium text-blue-700 mb-2">Industry-Specific Considerations:</h5>
+                        <ul className="list-disc pl-5 space-y-1">
+                          {consultantGuidance[0].industryNotes[formData.industry].keyPoints.map((point, index) => (
+                            <li key={index} className="text-gray-700">{point}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                    
+                    <div className="text-sm text-gray-500 italic mb-3">
+                      Note: The assessment questions and scoring will be tailored based on {formData.industry === 'financial-services' ? 'Financial Services' :
+                         formData.industry === 'public-sector' ? 'Public Sector' : 
+                         formData.industry.charAt(0).toUpperCase() + formData.industry.slice(1)} industry priorities.
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-gray-700 mb-3">{consultantGuidance[0]?.content}</p>
+                    
+                    {consultantGuidance[0]?.keyPoints && (
+                      <div>
+                        <h4 className="font-medium text-blue-700 mb-2">Key Discussion Points:</h4>
+                        <ul className="list-disc pl-5 space-y-1">
+                          {consultantGuidance[0]?.keyPoints?.map((point, index) => (
+                            <li key={index} className="text-gray-700">{point}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             )}
-          </div>
+          </>
+        ) : (
+          <>
+            <p className="mb-6 text-gray-700 text-lg">
+              Complete this interactive questionnaire to determine if Microsoft Fabric is the right solution 
+              for your organization's data and analytics needs.
+            </p>
+            
+            {/* Consultant Notes Panel for steps other than industry selection */}
+            {showConsultantNotes && step <= 4 && (
+              <div className="consultant-notes mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-center mb-3">
+                  <svg className="w-5 h-5 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                  <h3 className="text-lg font-semibold text-blue-800">{consultantGuidance[step]?.title}</h3>
+                </div>
+                <p className="text-gray-700 mb-3">{consultantGuidance[step]?.content}</p>
+                
+                {consultantGuidance[step]?.keyPoints && (
+                  <div>
+                    <h4 className="font-medium text-blue-700 mb-2">Key Discussion Points:</h4>
+                    <ul className="list-disc pl-5 space-y-1">
+                      {consultantGuidance[step]?.keyPoints?.map((point, index) => (
+                        <li key={index} className="text-gray-700">{point}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
         )}
 
         {step > 0 && (
@@ -212,24 +372,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
         )}
 
         <form onSubmit={handleSubmit}>
-          {step === 0 && (
-            <div className="slide-in">
-              {/* Industry Selection Step */}
-              <IndustrySelector 
-                onIndustrySelect={(industry) => setSelectedIndustry(industry)}
-                selectedIndustry={selectedIndustry}
-              />
-              
-              <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <h3 className="text-lg font-semibold text-blue-800 mb-2">Why is this important?</h3>
-                <p className="text-gray-700">
-                  Different industries have unique Microsoft Fabric requirements and adoption considerations. 
-                  By selecting your industry, we can tailor the assessment to provide more relevant recommendations 
-                  and accurate ROI projections for your specific needs.
-                </p>
-              </div>
-            </div>
-          )}
+          {/* Industry selection step has been moved to the top of the form */}
           {step === 1 && (
             <div className="slide-in bg-white p-6 rounded-lg">
               <h3 className="text-xl font-semibold mb-4">Current Infrastructure</h3>
@@ -369,7 +512,6 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
               </div>
             </div>
           )}
-
           {step === 3 && (
             <div className="slide-in bg-white p-6 rounded-lg">
               <h3 className="text-xl font-semibold mb-4">Microsoft Ecosystem</h3>
@@ -418,7 +560,6 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onComplete }) => {
               </div>
             </div>
           )}
-
           {step === 4 && (
             <div className="slide-in bg-white p-6 rounded-lg">
               <h3 className="text-xl font-semibold mb-4">Business Requirements & Compliance</h3>

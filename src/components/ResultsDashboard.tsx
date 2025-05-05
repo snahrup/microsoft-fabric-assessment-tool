@@ -176,11 +176,11 @@ const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ assessmentData, fab
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="p-4 rounded-lg bg-gray-50">
                     <h4 className="text-lg font-semibold mb-3 text-blue-800">Fabric Readiness</h4>
-                    <div className="grid place-items-center h-64">
+                    <div className="grid place-items-center h-80"> {/* Increased height */}
                       <RadarChart 
                         assessmentData={assessmentData} 
-                        width={300} 
-                        height={300} 
+                        width={360} 
+                        height={360} 
                         colorScheme="blue" 
                       />
                     </div>

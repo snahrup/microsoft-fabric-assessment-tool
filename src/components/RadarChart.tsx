@@ -72,12 +72,12 @@ const RadarChart: React.FC<RadarChartProps> = ({
             datasets: [{
               label: 'Fabric Readiness Assessment',
               data: [
-                scores.data,
-                scores.analytics,
-                scores.governance,
-                scores.culture,
-                calculateMicrosoftEcosystemScore(assessmentData),
-                calculateImplementationReadinessScore(assessmentData)
+                parseFloat(Number(scores.data).toFixed(1)),
+                parseFloat(Number(scores.analytics).toFixed(1)),
+                parseFloat(Number(scores.governance).toFixed(1)),
+                parseFloat(Number(scores.culture).toFixed(1)),
+                parseFloat(Number(calculateMicrosoftEcosystemScore(assessmentData)).toFixed(1)),
+                parseFloat(Number(calculateImplementationReadinessScore(assessmentData)).toFixed(1))
               ],
               backgroundColor: colors.backgroundColor,
               borderColor: colors.borderColor,
@@ -91,6 +91,14 @@ const RadarChart: React.FC<RadarChartProps> = ({
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+              padding: {
+                top: 20,
+                right: 50,
+                bottom: 20,
+                left: 50
+              }
+            },
             scales: {
               r: {
                 angleLines: {
@@ -112,7 +120,32 @@ const RadarChart: React.FC<RadarChartProps> = ({
                     size: 12,
                     weight: 'bold' as const
                   },
-                  color: '#666'
+                  color: '#666',
+                  padding: 15, // Add more padding specifically for the point labels
+                  centerPointLabels: false, // Don't center labels which can cause overlap
+                  // Custom formatter to add line breaks for long labels
+                  callback: (label: string) => {
+                    // Insert line breaks for longer labels
+                    if (label === 'Implementation Readiness') {
+                      return ['Implementation', 'Readiness'];
+                    }
+                    if (label === 'Microsoft Ecosystem Fit') {
+                      return ['Microsoft', 'Ecosystem Fit'];
+                    }
+                    if (label === 'Organizational Culture') {
+                      return ['Organizational', 'Culture'];
+                    }
+                    if (label === 'Governance Framework') {
+                      return ['Governance', 'Framework'];
+                    }
+                    if (label === 'Analytics Capabilities') {
+                      return ['Analytics', 'Capabilities'];
+                    }
+                    if (label === 'Data Integration') {
+                      return ['Data', 'Integration'];
+                    }
+                    return label;
+                  }
                 }
               }
             },
@@ -128,7 +161,7 @@ const RadarChart: React.FC<RadarChartProps> = ({
               tooltip: {
                 callbacks: {
                   label: function(context) {
-                    return `Score: ${context.parsed.r.toFixed(1)}/10`;
+                    return `Score: ${Number(context.parsed.r).toFixed(1)}/10`;
                   },
                   title: function(context) {
                     return context[0].label;

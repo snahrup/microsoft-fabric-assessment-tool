@@ -3,6 +3,7 @@ import { AssessmentData } from '../App';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { calculateScores } from '../utils/calculateScores';
+import RadarChart from './RadarChart';
 
 interface ReportGeneratorProps {
   assessmentData: AssessmentData;
@@ -188,7 +189,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ assessmentData, fabri
                     ? assessmentData.currentInfrastructure.map((item, index) => (
                         <li key={index}>{item}</li>
                       ))
-                    : <li>No infrastructure specified</li>
+                    : <li>No current infrastructure specified</li>
                   }
                 </ul>
               </div>
@@ -196,12 +197,13 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ assessmentData, fabri
               <div>
                 <h3 className="font-semibold mb-2">Data Characteristics</h3>
                 <ul className="list-disc pl-5">
+                  <li>Data Warehouse: {assessmentData.dataWarehouseSolution || 'Not specified'}</li>
+                  <li>BI Tool: {assessmentData.businessIntelligenceTool || 'Not specified'}</li>
                   <li>Data Types: {assessmentData.dataTypes.length > 0 
                     ? assessmentData.dataTypes.join(', ')
                     : 'None specified'
                   }</li>
-                  <li>Data Volume: {assessmentData.dataVolume}/10</li>
-                  <li>Real-time Needs: {assessmentData.realTimeNeeds}/10</li>
+                  <li>Data Volume: {assessmentData.dataVolume.toFixed(1)}/10</li>
                 </ul>
               </div>
             </div>
@@ -216,20 +218,85 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ assessmentData, fabri
                       ))
                     : <li>No Microsoft products specified</li>
                   }
-                  <li>Power BI Usage: {assessmentData.powerBiUsage}/10</li>
+                  <li>Power BI Usage: {assessmentData.powerBiUsage.toFixed(1)}/10</li>
                 </ul>
               </div>
               
               <div>
                 <h3 className="font-semibold mb-2">Requirements & Compliance</h3>
                 <ul className="list-disc pl-5">
-                  <li>Budget Constraint: {assessmentData.budgetConstraint}/10</li>
-                  <li>Data Sovereignty: {assessmentData.dataSovereigntyNeeds}/10</li>
+                  <li>Budget Constraint: {assessmentData.budgetConstraint.toFixed(1)}/10</li>
+                  <li>Data Sovereignty: {assessmentData.dataSovereigntyNeeds.toFixed(1)}/10</li>
                   <li>Compliance: {assessmentData.complianceRequirements.length > 0 
                     ? assessmentData.complianceRequirements.join(', ')
                     : 'None specified'
                   }</li>
                 </ul>
+              </div>
+            </div>
+          </div>
+          
+          {/* Fabric Readiness Visualization - Added Section */}
+          <div className="readiness-visualization mb-8 pb-6 border-b">
+            <h2 className="text-2xl font-bold mb-4">Fabric Readiness Assessment</h2>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="visualization-card bg-white p-4 rounded-lg">
+                <h3 className="font-semibold text-lg text-center mb-3">Readiness Dimensions</h3>
+                <div className="flex justify-center h-80">
+                  {/* Radar chart visualization */}
+                  <RadarChart 
+                    assessmentData={assessmentData} 
+                    width={360} 
+                    height={360} 
+                    colorScheme="blue" 
+                  />
+                </div>
+              </div>
+              
+              <div className="implementation-complexity p-4 rounded-lg">
+                <h3 className="font-semibold text-lg text-center mb-3">Implementation Complexity</h3>
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="mb-4 grid grid-cols-2 gap-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Data Complexity:</span>
+                      <span className="text-sm font-bold text-blue-600">
+                        {assessmentData.dataVolume > 8 ? 'High' : 
+                         assessmentData.dataVolume > 5 ? 'Medium' : 'Low'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Technical Fit:</span>
+                      <span className="text-sm font-bold text-blue-600">
+                        {assessmentData.microsoftInvestments.length > 2 ? 'Excellent' : 
+                         assessmentData.microsoftInvestments.length > 0 ? 'Good' : 'Limited'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Time Constraint:</span>
+                      <span className="text-sm font-bold text-blue-600">
+                        {assessmentData.timeToImplementation < 4 ? 'Urgent' : 
+                         assessmentData.timeToImplementation < 7 ? 'Moderate' : 'Flexible'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Budget:</span>
+                      <span className="text-sm font-bold text-blue-600">
+                        {assessmentData.budgetConstraint < 4 ? 'Limited' : 
+                         assessmentData.budgetConstraint < 7 ? 'Moderate' : 'Adequate'}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-center pt-4 border-t border-gray-200">
+                    <p className="text-sm text-gray-600">Implementation Timeframe Estimate:</p>
+                    <p className="text-lg font-bold text-blue-800">
+                      {assessmentData.microsoftInvestments.length > 2 && assessmentData.powerBiUsage > 7 
+                        ? '3-6 months' 
+                        : assessmentData.microsoftInvestments.length > 0 
+                          ? '6-9 months' 
+                          : '9-12 months'}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -358,7 +425,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ assessmentData, fabri
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-gray-700">Score:</span>
-                        <span className="font-medium">{topStrength.score}/10</span>
+                        <span className="font-medium">{topStrength.score.toFixed(1)}/10</span>
                       </div>
                     </div>
                   );
@@ -386,7 +453,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ assessmentData, fabri
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-gray-700">Current Score:</span>
-                        <span className="font-medium">{topOpportunity.score}/10</span>
+                        <span className="font-medium">{topOpportunity.score.toFixed(1)}/10</span>
                       </div>
                     </div>
                   );
