@@ -453,7 +453,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ assessmentData, fabri
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-gray-700">Current Score:</span>
-                        <span className="font-medium">{topOpportunity.score.toFixed(1)}/10</span>
+                        <span className="font-medium">{parseFloat(topOpportunity.score.toFixed(1))}/10</span>
                       </div>
                     </div>
                   );

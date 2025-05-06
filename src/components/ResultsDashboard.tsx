@@ -7,9 +7,10 @@ interface ResultsDashboardProps {
   assessmentData: AssessmentData;
   fabricScore: number;
   onContinue: () => void;
+  onToggleUiMode?: () => void;
 }
 
-const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ assessmentData, fabricScore, onContinue }) => {
+const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ assessmentData, fabricScore, onContinue, onToggleUiMode }) => {
   const scoreGaugeRef = useRef<HTMLCanvasElement>(null);
   const [chartsReady, setChartsReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -238,12 +239,26 @@ const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ assessmentData, fab
           )}
         </div>
         
-        <div className="flex justify-end mt-8">
+        <div className="flex justify-between items-center mt-8">
+          <div>
+            {onToggleUiMode && (
+              <button 
+                onClick={onToggleUiMode} 
+                className="bg-gray-200 text-gray-800 py-2 px-4 rounded-lg font-medium shadow-md hover:bg-gray-300 transition-colors flex items-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
+                </svg>
+                Try Modern UI
+              </button>
+            )}
+          </div>
+          
           <button 
             onClick={onContinue} 
-            className="bg-blue-600 text-white py-3 px-6 rounded-lg font-medium text-lg shadow-md hover:bg-blue-700 transition-colors"
+            className="bg-blue-600 text-white py-2 px-4 rounded-lg font-medium shadow-md hover:bg-blue-700 transition-colors"
           >
-            Compare with Alternatives &rarr;
+            Continue to Comparison &rarr;
           </button>
         </div>
       </div>

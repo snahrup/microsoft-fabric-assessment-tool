@@ -159,7 +159,7 @@ const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ formData }) => {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-700">Current Score:</span>
-                <span className="font-medium">{topOpportunity.score}/10</span>
+                <span className="font-medium">{parseFloat(topOpportunity.score.toFixed(1))}/10</span>
               </div>
               <p className="text-sm text-gray-600 mt-2">
                 Prioritize improvements in {topOpportunity.name.toLowerCase()} to unlock full Microsoft Fabric potential.

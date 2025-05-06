@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import AssessmentForm from './components/AssessmentForm'
 import ResultsDashboard from './components/ResultsDashboard'
@@ -7,6 +7,7 @@ import ReportGenerator from './components/ReportGenerator'
 import Header from './components/Header'
 import ExecutiveSummary from './components/ExecutiveSummary'
 import ValueCalculator from './components/ValueCalculator'
+import ModernDashboard from './components/ModernDashboard'
 
 // Define the structure of our assessment data
 export interface AssessmentData {
@@ -40,6 +41,22 @@ function App() {
   const [currentStep, setCurrentStep] = useState<'assessment' | 'results' | 'comparison' | 'executive' | 'value' | 'report'>('assessment');
   const [assessmentData, setAssessmentData] = useState<AssessmentData | null>(null);
   const [fabricScore, setFabricScore] = useState<number>(0);
+  const [uiMode, setUiMode] = useState<'classic' | 'modern'>('classic');
+  
+  // Check local storage for UI mode preference
+  useEffect(() => {
+    const savedMode = localStorage.getItem('fabricAssessmentUiMode');
+    if (savedMode === 'modern' || savedMode === 'classic') {
+      setUiMode(savedMode);
+    }
+  }, []);
+  
+  // Save UI mode preference to local storage
+  const toggleUiMode = () => {
+    const newMode = uiMode === 'classic' ? 'modern' : 'classic';
+    setUiMode(newMode);
+    localStorage.setItem('fabricAssessmentUiMode', newMode);
+  };
 
   const handleAssessmentComplete = (data: AssessmentData) => {
     // Calculate Microsoft Fabric suitability score based on assessment data
@@ -75,14 +92,39 @@ function App() {
 
   return (
     <div className="app-container bg-gray-50 min-h-screen">
-      <Header />
+      {/* Show header in classic mode */}
+      {uiMode === 'classic' && <Header />}
+      
+      {/* Modern UI mode with toggle back to classic */}
+      {uiMode === 'modern' && currentStep === 'results' && assessmentData && (
+        <div className="fixed top-4 right-4 z-50">
+          <button 
+            onClick={toggleUiMode} 
+            className="px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm text-gray-800 font-medium hover:bg-gray-50 transition-colors flex items-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
+            </svg>
+            Switch to Classic UI
+          </button>
+        </div>
+      )}
       
       {currentStep === 'assessment' && (
         <AssessmentForm onComplete={handleAssessmentComplete} />
       )}
       
-      {currentStep === 'results' && assessmentData && (
+      {currentStep === 'results' && assessmentData && uiMode === 'classic' && (
         <ResultsDashboard 
+          assessmentData={assessmentData} 
+          fabricScore={fabricScore}
+          onContinue={() => setCurrentStep('comparison')}
+          onToggleUiMode={toggleUiMode}
+        />
+      )}
+      
+      {currentStep === 'results' && assessmentData && uiMode === 'modern' && (
+        <ModernDashboard 
           assessmentData={assessmentData} 
           fabricScore={fabricScore}
           onContinue={() => setCurrentStep('comparison')}
